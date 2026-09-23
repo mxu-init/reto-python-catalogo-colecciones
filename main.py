@@ -48,7 +48,7 @@ for x in range(0, quantity):
 print("\nCatálogo registrado:")
 print(catalog)
 
-# Parte 3: Almacenamiento de la información
+# Parte 3: Almacenamiento de la información | Acceso a los valores de cada pieza
 
 print("\n--- Búsqueda de pieza por campo y valor ---")
 search_field = input("¿Por qué campo deseas buscar? (id, name, category, price, status, description): ").strip().lower()
