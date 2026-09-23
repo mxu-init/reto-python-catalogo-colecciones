@@ -7,11 +7,12 @@ print(f"Estás ingresando al {system_name}")
 
 # Parte 2: Captura de piezas por terminal
 
+#Test para cómo recoger/consultar datos diccionarios. Consultar una sola clave individual
+#Ejemplo: solo consultar el nombre objeto 1, no todo el objeto
+"""
 cant = int(input("¿Cuántos items quieres añadir?"))
 lista_de_items = []
 
-#Test para cómo recoger/consultar datos diccionarios
-"""
 for x in range (0, cant):
   nombre = input("Introduce el nombre del item:")
   categoria = input ("Introduce la categoría del item: ")
@@ -46,3 +47,18 @@ for x in range(0, quantity):
     piece = {}
 print("\nCatálogo registrado:")
 print(catalog)
+
+# Parte 3: Almacenamiento de la información
+
+print("\n--- Búsqueda de pieza por campo y valor ---")
+search_field = input("¿Por qué campo deseas buscar? (id, name, category, price, status, description): ").strip().lower()
+search_value = input(f"Introduce el valor de '{search_field}' que deseas encontrar: ").strip()
+
+found_pieces = [elem for elem in catalog if str(elem.get(search_field)).lower() == search_value.lower()]
+
+if not found_pieces:
+    print(f"No se encontró ninguna pieza con {search_field} = '{search_value}'.")
+else:
+    print(f"Se encontraron {len(found_pieces)} pieza(s):")
+    for elem in found_pieces:
+        print(elem)
