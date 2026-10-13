@@ -191,5 +191,46 @@ print(f"En minúsculas: {clean_username.lower()}")
 print(f"En mayúsculas: {clean_username.upper()}")
 print(f"En formato título: {clean_username.title()}")
 
+# Nivel 3 (Opcional)
+# Parte 10: Crear un menú interactivo
+
+menu_active = True
+while menu_active:
+    print("\n=== Menú Interactivo ===")
+    print("1. Mostrar todas las piezas")
+    print("2. Mostrar solo las piezas disponibles")
+    print("3. Mostrar el precio promedio")
+    print("4. Salir")
+    selected_option = input("Selecciona una opción (1-4): ").strip()
+
+    if selected_option == "1":
+        print("\n--- Todas las piezas del catálogo ---")
+        if not catalog:
+            print("El catálogo está vacío actualmente.")
+        else:
+            for elem in catalog:
+                print(f"ID: {elem['id']} | Nombre: {elem['name']} | Categoría: {elem['category']} | Precio: {elem['price']} | Estado: {elem['status']} | Descripción: {elem['description']}")
+    elif selected_option == "2":
+        print("\n--- Piezas disponibles ---")
+        available_found = False
+        for elem in catalog:
+            if elem["status"].lower() == "disponible":
+                print(f"ID: {elem['id']} | Nombre: {elem['name']} | Precio: {elem['price']} | Estado: {elem['status']}")
+                available_found = True
+        if not available_found:
+            print("No se encontraron piezas disponibles.")
+    elif selected_option == "3":
+        print("\n--- Precio promedio ---")
+        if not catalog:
+            print("El catálogo está vacío. Precio promedio: 0.00")
+        else:
+            total_sum = sum(float(elem["price"]) for elem in catalog)
+            avg_price = total_sum / len(catalog)
+            print(f"Precio promedio del catálogo: {avg_price:.2f}")
+    elif selected_option == "4":
+        print("Saliendo del menú interactivo. Continuando con métricas y validaciones...")
+        menu_active = False
+    else:
+        print("Opción no válida. Por favor, selecciona un número entre 1 y 4.")
 
 
