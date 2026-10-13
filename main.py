@@ -268,5 +268,52 @@ print("\n--- Piezas enumeradas ---")
 for index, elem in enumerate(catalog, start=1):
     print(f"{index}. {elem['name']}")
 
+# Parte 12: Validaciones básicas
+
+print("\n=== Validaciones Básicas: Registrar Pieza Validada ===")
+valid_id = input("Introduce el identificador de la pieza: ").strip()
+
+valid_name = input("Introduce el nombre de la pieza: ").strip()
+while not valid_name:
+    print("Error de validación: El nombre no puede estar vacío.")
+    valid_name = input("Introduce el nombre de la pieza: ").strip()
+
+valid_category = input("Introduce la categoría de la pieza: ").strip()
+while not valid_category:
+    print("Error de validación: La categoría no puede estar vacía.")
+    valid_category = input("Introduce la categoría de la pieza: ").strip()
+
+while True:
+    price_input_val = input("Introduce el precio de la pieza: ").strip()
+    if price_input_val.replace(".", "", 1).isdigit() and float(price_input_val) > 0:
+        valid_price = float(price_input_val)
+        break
+    print("Error de validación: El precio debe ser un valor numérico mayor que cero.")
+
+allowed_statuses = ["disponible", "reservada", "vendida"]
+valid_status = input("Introduce el estado (disponible, reservada, vendida): ").strip().lower()
+while valid_status not in allowed_statuses:
+    print("Error de validación: El estado debe ser 'disponible', 'reservada' o 'vendida'.")
+    valid_status = input("Introduce el estado (disponible, reservada, vendida): ").strip().lower()
+
+valid_description = input("Introduce la descripción (debe contener obligatoriamente 'usada' o 'certificada'): ").strip()
+while "usada" not in valid_description.lower() and "certificada" not in valid_description.lower():
+    print("Error de validación: La descripción debe contener obligatoriamente la palabra 'usada' o 'certificada'.")
+    valid_description = input("Introduce la descripción (debe contener obligatoriamente 'usada' o 'certificada'): ").strip()
+
+new_validated_piece = {
+    "id": valid_id,
+    "name": valid_name,
+    "category": valid_category,
+    "price": valid_price,
+    "status": valid_status,
+    "description": valid_description
+}
+catalog.append(new_validated_piece)
+print("\nPieza validada añadida correctamente al catálogo:")
+print(new_validated_piece)
+print(f"Total actualizado de piezas en el catálogo: {len(catalog)}")
+print("\nPrograma finalizado con éxito.")
+
 
 
