@@ -233,4 +233,40 @@ while menu_active:
     else:
         print("Opción no válida. Por favor, selecciona un número entre 1 y 4.")
 
+# Parte 11: Calcular métricas del catálogo
+
+count_available = 0
+count_reserved = 0
+count_sold = 0
+sum_prices = 0.0
+
+for elem in catalog:
+    status_lower = elem["status"].lower()
+    if status_lower == "disponible":
+        count_available += 1
+    elif status_lower == "reservada":
+        count_reserved += 1
+    elif status_lower == "vendida":
+        count_sold += 1
+    sum_prices += float(elem["price"])
+
+total_count = len(catalog)
+if total_count > 0:
+    catalog_avg_price = sum_prices / total_count
+else:
+    catalog_avg_price = 0.0
+
+print("\n=== Métricas del Catálogo ===")
+print(f"1. Cantidad de piezas disponibles: {count_available}")
+print(f"2. Cantidad de piezas reservadas: {count_reserved}")
+print(f"3. Cantidad de piezas vendidas: {count_sold}")
+print(f"4. Cantidad total de piezas: {total_count}")
+print(f"5. Suma total de los precios: {sum_prices:.2f}")
+print(f"6. Precio promedio del catálogo: {catalog_avg_price:.2f}")
+
+print("\n--- Piezas enumeradas ---")
+for index, elem in enumerate(catalog, start=1):
+    print(f"{index}. {elem['name']}")
+
+
 
