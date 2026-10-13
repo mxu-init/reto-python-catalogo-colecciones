@@ -82,3 +82,13 @@ else:
     print(f"Se encontraron {len(found_pieces)} pieza(s):")
     for elem in found_pieces:
         print(elem)
+
+# Parte 4: Información adicional del catálogo
+
+categories = set()
+for elem in catalog:
+    categories.add(elem["category"])
+
+print("\n--- Categorías Únicas ---")
+print(f"Conjunto de categorías únicas: {categories}")
+print(f"Cantidad de categorías diferentes: {len(categories)}")
