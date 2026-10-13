@@ -134,3 +134,30 @@ for elem in catalog:
 if not price_found:
     print(f"No se encontraron piezas con precio superior a {min_price}.")
 
+# Parte 8: Aplicar operadores lógicos
+
+print("\n=== Regla de Publicación (Precio > 0 y Estado 'disponible') ===")
+for elem in catalog:
+    can_publish = float(elem["price"]) > 0 and elem["status"].lower() == "disponible"
+    if can_publish:
+        print(f"Pieza '{elem['name']}' (ID: {elem['id']}): Puede publicarse.")
+    else:
+        print(f"Pieza '{elem['name']}' (ID: {elem['id']}): NO puede publicarse.")
+
+print("\n=== Regla de Revisión (Estado 'reservada' o 'vendida') ===")
+for elem in catalog:
+    needs_review = elem["status"].lower() == "reservada" or elem["status"].lower() == "vendida"
+    if needs_review:
+        print(f"Pieza '{elem['name']}' (ID: {elem['id']}): Requiere revisión.")
+    else:
+        print(f"Pieza '{elem['name']}' (ID: {elem['id']}): NO requiere revisión.")
+
+print("\n=== Piezas No Vendidas (Estado diferente a 'vendida') ===")
+unsold_found = False
+for elem in catalog:
+    if elem["status"].lower() != "vendida":
+        print(f"ID: {elem['id']} | Nombre: {elem['name']} | Estado: {elem['status']} | Precio: {elem['price']}")
+        unsold_found = True
+if not unsold_found:
+    print("No se encontraron piezas sin vender.")
+
