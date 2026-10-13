@@ -102,3 +102,17 @@ for elem in catalog:
 print(f"\nCantidad total de piezas: {len(catalog)}")
 print(f"Categorías únicas: {categories}")
 print(f"Cantidad de categorías diferentes: {len(categories)}")
+
+# Nivel 2
+# Parte 6: Filtrar piezas por estado
+
+for target_status in ["disponible", "reservada", "vendida"]:
+    print(f"\n--- Piezas en estado '{target_status}' ---")
+    status_found = False
+    for elem in catalog:
+        if elem["status"].lower() == target_status:
+            print(f"ID: {elem['id']} | Nombre: {elem['name']} | Categoría: {elem['category']} | Precio: {elem['price']} | Estado: {elem['status']}")
+            status_found = True
+    if not status_found:
+        print(f"No se encontraron piezas con el estado '{target_status}'.")
+
