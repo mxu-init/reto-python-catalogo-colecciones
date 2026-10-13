@@ -92,3 +92,13 @@ for elem in catalog:
 print("\n--- Categorías Únicas ---")
 print(f"Conjunto de categorías únicas: {categories}")
 print(f"Cantidad de categorías diferentes: {len(categories)}")
+
+# Parte 5: Mostrar el catálogo
+
+print("\n=== Catálogo Completo de Piezas ===")
+for elem in catalog:
+    print(f"Identificador: {elem['id']} | Nombre: {elem['name']} | Categoría: {elem['category']} | Precio: {elem['price']} | Estado: {elem['status']} | Descripción: {elem['description']}")
+
+print(f"\nCantidad total de piezas: {len(catalog)}")
+print(f"Categorías únicas: {categories}")
+print(f"Cantidad de categorías diferentes: {len(categories)}")
