@@ -161,3 +161,34 @@ for elem in catalog:
 if not unsold_found:
     print("No se encontraron piezas sin vender.")
 
+# Parte 9: Manipulación de strings
+
+print("\n=== Manipulación de Cadenas de Texto ===")
+if len(catalog) > 0:
+    first_piece = catalog[0]
+    concatenation_output = "ID Pieza: " + str(first_piece["id"]) + " - Nombre: " + first_piece["name"] + " - Categoría: " + first_piece["category"] + " - Precio: " + str(first_piece["price"])
+    print("Concatenación:\n" + concatenation_output)
+
+    interpolation_output = f"ID Pieza: {first_piece['id']} - Nombre: {first_piece['name']} - Categoría: {first_piece['category']} - Precio: {first_piece['price']}"
+    print(f"Interpolación:\n{interpolation_output}")
+
+    modified_description = first_piece["description"].replace("usada", "certificada")
+    print(f"Descripción original: {first_piece['description']}")
+    print(f"Descripción con 'usada' reemplazada por 'certificada': {modified_description}")
+
+    normalized_piece_name = first_piece["name"].strip().title()
+    print(f"Nombre de la pieza normalizado: '{normalized_piece_name}'")
+
+tags_string = input("\nIntroduce etiquetas separadas por comas (ej. retro,anime,limited): ")
+separated_tags = tags_string.split(",")
+clean_tags = [tag.strip() for tag in separated_tags]
+print(f"Lista de etiquetas separadas: {clean_tags}")
+
+terminal_username = input("\nIntroduce un nombre de usuario: ")
+clean_username = terminal_username.strip()
+print(f"Sin espacios al inicio o al final: '{clean_username}'")
+print(f"En minúsculas: {clean_username.lower()}")
+print(f"En mayúsculas: {clean_username.upper()}")
+print(f"En formato título: {clean_username.title()}")
+
+
