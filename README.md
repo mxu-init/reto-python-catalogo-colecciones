@@ -1,6 +1,6 @@
 # Catálogo de Piezas Coleccionables (Collectible Pieces Catalog System)
 
-Programa de consola en Python para gestionar, consultar, filtrar, validar y analizar un catálogo de piezas coleccionables. Desarrollado como parte de un taller práctico de iniciación en Python centrado en el uso de estructuras de datos y lógica secuencial sin funciones personalizadas.
+Programa de consola en Python para gestionar, consultar, filtrar, validar y analizar un catálogo de piezas coleccionables.
 
 ---
 
