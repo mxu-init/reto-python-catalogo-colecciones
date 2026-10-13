@@ -38,10 +38,30 @@ quantity = int(input("¿Cuántas piezas deseas añadir? "))
 for x in range(0, quantity):
     print(f"\nIntroduce los datos para la pieza número {x + 1}:")
     for key in keys:
-        value = input(f"Introduce el valor para {key}: ")
-        if key == "price":
-            piece[key] = float(value)
+        if key == "id":
+            while True:
+                try:
+                    id_num = int(input(f"Introduce el valor para {key}: "))
+                    existing_ids = [elem["id"] for elem in catalog]
+                    if id_num in existing_ids:
+                        print("Ya existe una pieza con ese ID. Por favor, introduce uno diferente.")
+                    else:
+                        piece[key] = id_num
+                        break
+                except ValueError:
+                    print("Error: El ID debe ser un número entero.")
+
+        elif key == "price":
+            while True:
+                try:
+                    price_val = float(input(f"Introduce el valor para {key}: "))
+                    piece[key] = price_val
+                    break
+                except ValueError:
+                    print("Error: El precio debe ser un número válido (ej: 12 o 19.99).")
+
         else:
+            value = input(f"Introduce el valor para {key}: ")
             piece[key] = value
     catalog.append(piece)
     piece = {}
