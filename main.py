@@ -116,3 +116,21 @@ for target_status in ["disponible", "reservada", "vendida"]:
     if not status_found:
         print(f"No se encontraron piezas con el estado '{target_status}'.")
 
+# Parte 7: Filtrar piezas por precio
+
+min_price_input = input("\nIntroduce un precio mínimo para filtrar: ").strip()
+while not min_price_input.replace(".", "", 1).isdigit():
+    print("Precio no válido. Por favor, introduce un valor numérico.")
+    min_price_input = input("Introduce un precio mínimo para filtrar: ").strip()
+
+min_price = float(min_price_input)
+price_found = False
+print(f"\n--- Piezas con precio superior a {min_price} ---")
+for elem in catalog:
+    if float(elem["price"]) > min_price:
+        print(f"ID: {elem['id']} | Nombre: {elem['name']} | Precio: {elem['price']}")
+        price_found = True
+
+if not price_found:
+    print(f"No se encontraron piezas con precio superior a {min_price}.")
+
