@@ -1,4 +1,5 @@
-from catalog import add_piece, list_pieces, find_piece_by_id, find_pieces_by_field
+from catalog import (add_piece, list_pieces, find_piece_by_id, find_pieces_by_field,
+                     get_catalog_summary, get_unique_categories)
 
 # Nivel 1
 # Parte 1: Preparación del proyecto
@@ -94,13 +95,15 @@ else:
 
 # Parte 4: Información adicional del catálogo
 
-categories = set()
-for elem in catalog:
-    categories.add(elem["category"])
+categories = get_unique_categories(catalog)
 
 print("\n--- Categorías Únicas ---")
 print(f"Conjunto de categorías únicas: {categories}")
 print(f"Cantidad de categorías diferentes: {len(categories)}")
+
+print("\n--- Resumen: piezas por categoría ---")
+for category, count in get_catalog_summary(catalog).items():
+    print(f"{category}: {count} pieza(s)")
 
 # Parte 5: Mostrar el catálogo
 

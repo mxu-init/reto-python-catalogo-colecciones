@@ -89,3 +89,24 @@ def remove_piece(catalog, piece_id):
         return True
     except (TypeError, LookupError):
         return False
+
+
+# Parte 5: Resumen del catálogo (diccionario)
+
+def get_catalog_summary(catalog):
+    """Retorna un diccionario con la cantidad de piezas por categoría."""
+    validate_catalog(catalog)
+    summary = {}
+    for elem in catalog:
+        category = elem["category"]
+        summary[category] = summary.get(category, 0) + 1
+    return summary
+
+
+def get_unique_categories(catalog):
+    """Retorna un set con las categorías únicas del catálogo."""
+    validate_catalog(catalog)
+    categories = set()
+    for elem in catalog:
+        categories.add(elem["category"])
+    return categories
