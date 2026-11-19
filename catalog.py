@@ -184,3 +184,21 @@ def get_catalog_metrics(catalog):
         "sum_prices": sum_prices,
         "average_price": get_average_price(catalog)
     }
+
+
+# Funciones adicionales: reglas de negocio con operadores lógicos (nivel I)
+
+def can_be_published(piece):
+    """Retorna True si la pieza tiene precio mayor que 0 y está disponible."""
+    return float(piece["price"]) > 0 and piece["status"].lower() == "disponible"
+
+
+def needs_review(piece):
+    """Retorna True si la pieza está reservada o vendida."""
+    return piece["status"].lower() == "reservada" or piece["status"].lower() == "vendida"
+
+
+def get_unsold_pieces(catalog):
+    """Retorna una lista con las piezas cuyo estado es diferente a 'vendida'."""
+    validate_catalog(catalog)
+    return [elem for elem in catalog if elem["status"].lower() != "vendida"]
