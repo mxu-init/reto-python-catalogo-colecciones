@@ -5,28 +5,6 @@ from catalog import (add_piece, list_pieces, find_piece_by_id, find_pieces_by_fi
                      get_average_price, get_catalog_metrics,
                      can_be_published, needs_review, get_unsold_pieces)
 
-#Test para cómo recoger/consultar datos diccionarios. Consultar una sola clave individual
-#Ejemplo: solo consultar el nombre objeto 1, no todo el objeto
-"""
-cant = int(input("¿Cuántos items quieres añadir?"))
-lista_de_items = []
-
-for x in range (0, cant):
-  nombre = input("Introduce el nombre del item:")
-  categoria = input ("Introduce la categoría del item: ")
-
-  item = {"nombre": nombre, "categoria": categoria}
-  lista_de_items.append(item)
-
-for x in lista_de_items:
-  print(f"{x['nombre']} - {x['categoria']}")
-
-numero_item = int(input("¿Qué item quieres consultar?"))
-consulta= input("¿Qué quieres consultar?").strip().lower()
-
-print(lista_de_items[numero_item][consulta])
-
-"""
 
 piece_prompts = {
     "id": "Introduce el identificador de la pieza: ",
