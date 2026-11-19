@@ -1,4 +1,4 @@
-from catalog import add_piece, list_pieces
+from catalog import add_piece, list_pieces, find_piece_by_id, find_pieces_by_field
 
 # Nivel 1
 # Parte 1: Preparación del proyecto
@@ -79,7 +79,11 @@ print("\n--- Búsqueda de pieza por campo y valor ---")
 search_field = input("¿Por qué campo deseas buscar? (id, name, category, price, status, description): ").strip().lower()
 search_value = input(f"Introduce el valor de '{search_field}' que deseas encontrar: ").strip()
 
-found_pieces = [elem for elem in catalog if str(elem.get(search_field)).lower() == search_value.lower()]
+if search_field == "id":
+    found_piece = find_piece_by_id(catalog, search_value)
+    found_pieces = [found_piece] if found_piece is not None else []
+else:
+    found_pieces = find_pieces_by_field(catalog, search_field, search_value)
 
 if not found_pieces:
     print(f"No se encontró ninguna pieza con {search_field} = '{search_value}'.")

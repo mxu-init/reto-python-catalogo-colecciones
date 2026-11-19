@@ -54,3 +54,20 @@ def list_pieces(catalog):
     """
     validate_catalog(catalog)
     return [elem["name"] for elem in catalog]
+
+
+# Parte 3: Buscar una pieza por identificador
+
+def find_piece_by_id(catalog, piece_id):
+    """Retorna la pieza cuyo id coincida, o None si no existe."""
+    validate_catalog(catalog)
+    for elem in catalog:
+        if str(elem["id"]).lower() == str(piece_id).strip().lower():
+            return elem
+    return None
+
+
+def find_pieces_by_field(catalog, search_field, search_value):
+    """Retorna una lista con las piezas cuyo campo coincida con el valor buscado."""
+    validate_catalog(catalog)
+    return [elem for elem in catalog if str(elem.get(search_field)).lower() == str(search_value).strip().lower()]
