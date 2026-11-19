@@ -1,3 +1,5 @@
+from catalog import add_piece
+
 # Nivel 1
 # Parte 1: Preparación del proyecto
 
@@ -36,34 +38,37 @@ piece = {}
 catalog = []
 quantity = int(input("¿Cuántas piezas deseas añadir? "))
 for x in range(0, quantity):
-    print(f"\nIntroduce los datos para la pieza número {x + 1}:")
-    for key in keys:
-        if key == "id":
-            while True:
-                try:
-                    id_num = int(input(f"Introduce el valor para {key}: "))
+    while True:
+        print(f"\nIntroduce los datos para la pieza número {x + 1}:")
+        for key in keys:
+            if key == "id":
+                while True:
+                    id_value = input(f"Introduce el valor para {key}: ").strip()
                     existing_ids = [elem["id"] for elem in catalog]
-                    if id_num in existing_ids:
+                    if id_value in existing_ids:
                         print("Ya existe una pieza con ese ID. Por favor, introduce uno diferente.")
                     else:
-                        piece[key] = id_num
+                        piece[key] = id_value
                         break
-                except ValueError:
-                    print("Error: El ID debe ser un número entero.")
 
-        elif key == "price":
-            while True:
-                try:
-                    price_val = float(input(f"Introduce el valor para {key}: "))
-                    piece[key] = price_val
-                    break
-                except ValueError:
-                    print("Error: El precio debe ser un número válido (ej: 12 o 19.99).")
+            elif key == "price":
+                while True:
+                    try:
+                        price_val = float(input(f"Introduce el valor para {key}: "))
+                        piece[key] = price_val
+                        break
+                    except ValueError:
+                        print("Error: El precio debe ser un número válido (ej: 12 o 19.99).")
 
-        else:
-            value = input(f"Introduce el valor para {key}: ")
-            piece[key] = value
-    catalog.append(piece)
+            else:
+                value = input(f"Introduce el valor para {key}: ")
+                piece[key] = value
+        try:
+            catalog.append(add_piece(piece["id"], piece["name"], piece["category"],
+                                     piece["price"], piece["status"], piece["description"]))
+            break
+        except ValueError as error:
+            print(f"Error: {error} Vuelve a introducir los datos de la pieza.")
     piece = {}
 print("\nCatálogo registrado:")
 print(catalog)
@@ -301,17 +306,14 @@ while "usada" not in valid_description.lower() and "certificada" not in valid_de
     print("Error de validación: La descripción debe contener obligatoriamente la palabra 'usada' o 'certificada'.")
     valid_description = input("Introduce la descripción (debe contener obligatoriamente 'usada' o 'certificada'): ").strip()
 
-new_validated_piece = {
-    "id": valid_id,
-    "name": valid_name,
-    "category": valid_category,
-    "price": valid_price,
-    "status": valid_status,
-    "description": valid_description
-}
-catalog.append(new_validated_piece)
-print("\nPieza validada añadida correctamente al catálogo:")
-print(new_validated_piece)
+try:
+    new_validated_piece = add_piece(valid_id, valid_name, valid_category,
+                                    valid_price, valid_status, valid_description)
+    catalog.append(new_validated_piece)
+    print("\nPieza validada añadida correctamente al catálogo:")
+    print(new_validated_piece)
+except ValueError as error:
+    print(f"\nNo se pudo añadir la pieza: {error}")
 print(f"Total actualizado de piezas en el catálogo: {len(catalog)}")
 print("\nPrograma finalizado con éxito.")
 

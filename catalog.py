@@ -1,0 +1,39 @@
+ALLOWED_STATUSES = ["disponible", "reservada", "vendida"]
+
+
+# Parte 1: Agregar una pieza
+
+def add_piece(piece_id, name, category, price, status, description):
+    """Valida los datos recibidos y retorna el diccionario de la pieza.
+
+    Lanza ValueError con un mensaje claro si alguna validación falla.
+    """
+    fields = {"id": piece_id, "name": name, "category": category,
+              "price": price, "status": status, "description": description}
+    for field_name, value in fields.items():
+        if value is None or str(value).strip() == "":
+            raise ValueError(f"El campo '{field_name}' no puede estar vacío.")
+
+    try:
+        price = float(price)
+    except (TypeError, ValueError):
+        raise ValueError("El precio debe ser un valor numérico (ej: 12 o 19.99).")
+    if price <= 0:
+        raise ValueError("El precio debe ser mayor que cero.")
+
+    status = str(status).strip().lower()
+    if status not in ALLOWED_STATUSES:
+        raise ValueError("El estado debe ser 'disponible', 'reservada' o 'vendida'.")
+
+    description = str(description).strip()
+    if "usada" not in description.lower() and "certificada" not in description.lower():
+        raise ValueError("La descripción debe contener obligatoriamente la palabra 'usada' o 'certificada'.")
+
+    return {
+        "id": str(piece_id).strip(),
+        "name": str(name).strip(),
+        "category": str(category).strip(),
+        "price": price,
+        "status": status,
+        "description": description
+    }
