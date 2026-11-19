@@ -110,3 +110,11 @@ def get_unique_categories(catalog):
     for elem in catalog:
         categories.add(elem["category"])
     return categories
+
+
+# Parte 6: Piezas por categoría (lista)
+
+def get_pieces_by_category(catalog, category):
+    """Retorna una lista con los nombres de las piezas de la categoría indicada."""
+    validate_catalog(catalog)
+    return [elem["name"] for elem in catalog if elem["category"].lower() == str(category).strip().lower()]
