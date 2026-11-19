@@ -1,6 +1,7 @@
 from catalog import (add_piece, list_pieces, find_piece_by_id, find_pieces_by_field,
                      get_catalog_summary, get_unique_categories, get_pieces_by_category,
-                     piece_exists, filter_by_status, filter_by_min_price, ALLOWED_STATUSES)
+                     piece_exists, filter_by_status, filter_by_min_price,
+                     get_average_price, get_catalog_metrics, ALLOWED_STATUSES)
 
 # Nivel 1
 # Parte 1: Preparación del proyecto
@@ -230,11 +231,10 @@ while menu_active:
             print("No se encontraron piezas disponibles.")
     elif selected_option == "3":
         print("\n--- Precio promedio ---")
+        avg_price = get_average_price(catalog)
         if not catalog:
-            print("El catálogo está vacío. Precio promedio: 0.00")
+            print(f"El catálogo está vacío. Precio promedio: {avg_price:.2f}")
         else:
-            total_sum = sum(float(elem["price"]) for elem in catalog)
-            avg_price = total_sum / len(catalog)
             print(f"Precio promedio del catálogo: {avg_price:.2f}")
     elif selected_option == "4":
         print("Saliendo del menú interactivo. Continuando con métricas y validaciones...")
@@ -244,34 +244,15 @@ while menu_active:
 
 # Parte 11: Calcular métricas del catálogo
 
-count_available = 0
-count_reserved = 0
-count_sold = 0
-sum_prices = 0.0
-
-for elem in catalog:
-    status_lower = elem["status"].lower()
-    if status_lower == "disponible":
-        count_available += 1
-    elif status_lower == "reservada":
-        count_reserved += 1
-    elif status_lower == "vendida":
-        count_sold += 1
-    sum_prices += float(elem["price"])
-
-total_count = len(catalog)
-if total_count > 0:
-    catalog_avg_price = sum_prices / total_count
-else:
-    catalog_avg_price = 0.0
+metrics = get_catalog_metrics(catalog)
 
 print("\n=== Métricas del Catálogo ===")
-print(f"1. Cantidad de piezas disponibles: {count_available}")
-print(f"2. Cantidad de piezas reservadas: {count_reserved}")
-print(f"3. Cantidad de piezas vendidas: {count_sold}")
-print(f"4. Cantidad total de piezas: {total_count}")
-print(f"5. Suma total de los precios: {sum_prices:.2f}")
-print(f"6. Precio promedio del catálogo: {catalog_avg_price:.2f}")
+print(f"1. Cantidad de piezas disponibles: {metrics['available']}")
+print(f"2. Cantidad de piezas reservadas: {metrics['reserved']}")
+print(f"3. Cantidad de piezas vendidas: {metrics['sold']}")
+print(f"4. Cantidad total de piezas: {metrics['total']}")
+print(f"5. Suma total de los precios: {metrics['sum_prices']:.2f}")
+print(f"6. Precio promedio del catálogo: {metrics['average_price']:.2f}")
 
 print("\n--- Piezas enumeradas ---")
 try:

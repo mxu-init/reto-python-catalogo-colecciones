@@ -155,3 +155,45 @@ def filter_by_min_price(catalog, min_price):
     except (TypeError, ValueError):
         raise ValueError("El precio mínimo debe ser un valor numérico.")
     return [elem for elem in catalog if float(elem["price"]) > min_price]
+
+
+# Parte 10: Calcular el precio promedio
+
+def get_average_price(catalog):
+    """Retorna el precio promedio de las piezas, o 0 si el catálogo está vacío."""
+    validate_catalog(catalog)
+    try:
+        if not catalog:
+            raise ValueError("El catálogo está vacío, no se puede calcular el promedio.")
+        total_sum = sum(float(elem["price"]) for elem in catalog)
+        return total_sum / len(catalog)
+    except ValueError:
+        return 0
+
+
+def get_catalog_metrics(catalog):
+    """Retorna un diccionario con las métricas principales del catálogo."""
+    validate_catalog(catalog)
+    count_available = 0
+    count_reserved = 0
+    count_sold = 0
+    sum_prices = 0.0
+
+    for elem in catalog:
+        status_lower = elem["status"].lower()
+        if status_lower == "disponible":
+            count_available += 1
+        elif status_lower == "reservada":
+            count_reserved += 1
+        elif status_lower == "vendida":
+            count_sold += 1
+        sum_prices += float(elem["price"])
+
+    return {
+        "available": count_available,
+        "reserved": count_reserved,
+        "sold": count_sold,
+        "total": len(catalog),
+        "sum_prices": sum_prices,
+        "average_price": get_average_price(catalog)
+    }
