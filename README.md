@@ -2,160 +2,214 @@
 
 Programa de consola en Python para gestionar, consultar, filtrar, validar y analizar un catálogo de piezas coleccionables.
 
+> **Nivel II:** el código del nivel I (un único flujo de ejecución) se ha refactorizado en **funciones con parámetros y `return`**, con **manejo de errores (`try` / `except`)**, **lanzamiento de excepciones (`raise`)**, **validaciones tempranas** y **organización en módulos**.
+
 ---
 
 ## Objetivo del programa
 
-El objetivo principal de esta aplicación es proporcionar una herramienta interactiva por terminal que permita:
-1. Registrar piezas coleccionables con sus atributos clave (`id`, `name`, `category`, `price`, `status`, `description`).
-2. Almacenar la información en colecciones nativas (`list`, `dict`, `set`) para su consulta y recorrido.
-3. Aplicar filtros dinámicos por estado y rango de precio.
-4. Evaluar reglas de negocio mediante operadores lógicos y relacionales.
-5. Transformar y normalizar texto mediante métodos de manipulación de cadenas.
-6. Presentar métricas consolidadas del catálogo y un menú interactivo con validaciones de entrada robustas.
+Construir un programa por consola que permita gestionar un catálogo básico de piezas coleccionables:
+1. Registrar piezas con sus atributos (`id`, `name`, `category`, `price`, `status`, `description`).
+2. Consultar el catálogo: listar, buscar por identificador (u otro campo) y eliminar piezas.
+3. Aplicar filtros por estado y por precio mínimo.
+4. Calcular métricas: precio promedio, piezas por categoría y por estado.
+5. Validar los datos introducidos por el usuario, mostrando mensajes de error claros.
 
 ---
 
 ## Contexto del catálogo
 
-El catálogo modela un entorno de compra, venta y tasación de artículos coleccionables (como figuras de acción, cartas coleccionables, monedas antiguas, cómics, etc.). 
+El catálogo modela un entorno de compra, venta y tasación de artículos coleccionables (figuras de acción, cartas coleccionables, monedas antiguas, cómics, etc.).
 
-Cada artículo del catálogo contiene los siguientes campos:
+Cada pieza es un diccionario con esta forma:
+
+```python
+{
+    "id": "P001",
+    "name": "Dragon Figure",
+    "category": "Figuras",
+    "price": 25.5,
+    "status": "disponible",
+    "description": "Figura usada en buen estado"
+}
+```
 
 | Campo | Tipo de dato | Descripción |
 |---|---|---|
 | `id` | Texto (`str`) | Identificador único de la pieza |
 | `name` | Texto (`str`) | Nombre de la pieza |
 | `category` | Texto (`str`) | Categoría a la que pertenece |
-| `price` | Número decimal (`float`) | Precio de venta o valor de referencia |
+| `price` | Número decimal (`float`) | Precio, numérico y mayor que cero |
 | `status` | Texto (`str`) | Estado actual: `disponible`, `reservada` o `vendida` |
-| `description` | Texto (`str`) | Descripción obligatoria con `usada` o `certificada` |
+| `description` | Texto (`str`) | Debe contener obligatoriamente `usada` o `certificada` |
 
-### Reglas de negocio:
-- **Estados permitidos:**
-  - `disponible`: La pieza puede venderse o intercambiarse.
-  - `reservada`: Apartada temporalmente para un comprador.
-  - `vendida`: Ya fue adquirida y no está disponible.
-- **Descripción:** Debe incluir obligatoriamente el término `usada` o `certificada`.
-- **Regla de publicación:** Una pieza solo es publicable si su precio es mayor que 0 y su estado es `disponible`.
-- **Regla de revisión:** Requiere revisión si su estado es `reservada` o `vendida`.
+### Reglas de negocio
+- **Estados permitidos:** `disponible`, `reservada`, `vendida`.
+- **Descripción:** debe incluir obligatoriamente el término `usada` o `certificada`.
+- **Identificador:** no puede repetirse dentro del catálogo.
+- **Regla de publicación:** una pieza es publicable si su precio es mayor que 0 y su estado es `disponible`.
+- **Regla de revisión:** requiere revisión si su estado es `reservada` o `vendida`.
+
+---
+
+## Estructura del proyecto
+
+```
+Python-Colecciones/
+├── catalog.py        -> Funciones del catálogo (agregar, listar, buscar, quitar, filtrar, métricas)
+├── validations.py    -> Funciones de validación de los datos de una pieza
+├── main.py           -> Programa principal: menú y flujo de ejecución
+└── README.md
+```
+
+- `main.py` importa las funciones de `catalog.py` y `validations.py`.
+- `catalog.py` importa las validaciones de `validations.py`, de modo que la lógica de validación no se repite en ningún otro archivo.
 
 ---
 
 ## Funcionalidades implementadas
 
-El proyecto cubre todos los niveles y partes especificados en la guía técnica:
+### `catalog.py`
+| Parte | Función | Descripción |
+|---|---|---|
+| 1 | `add_piece(piece_id, name, category, price, status, description)` | Valida los datos y retorna el diccionario de la pieza. Lanza `ValueError` si algún dato no es válido. |
+| 2 | `list_pieces(catalog)` | Retorna la lista de nombres de las piezas. |
+| 3 | `find_piece_by_id(catalog, piece_id)` | Retorna la pieza con ese id, o `None` si no existe. |
+| 3 | `find_pieces_by_field(catalog, field, value)` | Búsqueda por cualquier otro campo (`name`, `category`...). |
+| 4 | `remove_piece(catalog, piece_id)` | Elimina la pieza. Retorna `True` si se eliminó o `False` si no se encontró. |
+| 5 | `get_catalog_summary(catalog)` | Retorna un diccionario con la cantidad de piezas por categoría. |
+| 6 | `get_pieces_by_category(catalog, category)` | Retorna los nombres de las piezas de una categoría. |
+| 7 | `piece_exists(catalog, piece_id)` | Retorna `True` o `False` según exista la pieza. |
+| 8 | `filter_by_status(catalog, status)` | Retorna las piezas con ese estado. Lanza `ValueError` si el estado no es válido. |
+| 9 | `filter_by_min_price(catalog, min_price)` | Retorna las piezas con precio mayor al indicado. Lanza `ValueError` si no es numérico. |
+| 10 | `get_average_price(catalog)` | Retorna el precio promedio, o `0` si el catálogo está vacío. |
 
-### Nivel 1 – Registro de piezas y estructuras base
-- **Parte 1 (Preparación del proyecto):** Definición del nombre del sistema y despliegue del mensaje de bienvenida al catálogo.
-- **Parte 2 (Captura de piezas por terminal):** Captura dinámica de piezas utilizando la estructura de la Opción A (recorrido de claves, construcción de diccionarios y almacenamiento en la lista principal `catalog`).
-- **Parte 3 (Almacenamiento de la información):** Búsqueda dinámica y consulta individual de piezas filtrando por cualquier campo (`id`, `name`, `category`, `price`, `status`, `description`).
-- **Parte 4 (Información adicional del catálogo):** Creación y cálculo de un `set` con las categorías únicas para eliminar duplicados y conocer la cantidad de categorías distintas.
-- **Parte 5 (Mostrar el catálogo):** Recorrido completo imprimiendo el detalle de cada pieza, el total de piezas y las categorías únicas.
+Todas las funciones que reciben el catálogo comprueban primero que sea una lista (`validate_catalog`) y, si no lo es, lanzan `TypeError`.
 
-### Nivel 2 – Filtros, operadores y strings
-- **Parte 6 (Filtrar piezas por estado):** Visualización segmentada para piezas `disponible`, `reservada` y `vendida` con control de resultados vacíos.
-- **Parte 7 (Filtrar piezas por precio):** Filtrado por precio mínimo con validación numérica interactiva.
-- **Parte 8 (Aplicar operadores lógicos):** Evaluación de condiciones booleanas compuestas (`and`, `or`, `not`) para publicación, revisión y piezas no vendidas.
-- **Parte 9 (Manipulación de strings):** Demostración de concatenación (`+`), interpolación con f-strings, reemplazo con `.replace()`, división de etiquetas con `.split()`, limpieza con `.strip()` y conversiones de caso (`.lower()`, `.upper()`, `.title()`).
+Además se conservan como funciones las funcionalidades del nivel I: `get_unique_categories` (set de categorías), `get_catalog_metrics` (conteo por estado, suma y promedio), `can_be_published`, `needs_review` y `get_unsold_pieces` (reglas con operadores lógicos).
 
-### Nivel 3 (Opcional) – Bucles, menú y métricas
-- **Parte 10 (Crear un menú interactivo):** Menú en bucle `while` con opciones para listar todas las piezas, listar disponibles, consultar precio promedio y salir, gestionando opciones inválidas.
-- **Parte 11 (Calcular métricas del catálogo):** Cálculo de totales acumulados, conteo por cada estado, precio promedio general y listado enumerado de piezas (`1. Nombre`).
-- **Parte 12 (Validaciones básicas):** Validación estricta paso a paso (precio numérico > 0, nombre no vacío, estado permitido, descripción con palabra clave requerida) impidiendo el avance con datos incorrectos y re-solicitando la entrada.
+### `validations.py` (Parte 11)
+- `validate_not_empty(value, field_name)`: el valor no puede estar vacío.
+- `validate_price(price)`: el precio debe ser numérico y mayor que cero.
+- `validate_status(status)`: el estado debe estar entre los permitidos.
+- `validate_description(description)`: la descripción debe contener `usada` o `certificada`.
+
+Cada función lanza `ValueError` con un mensaje claro y no imprime nada: mostrar el error es responsabilidad de quien la llama.
+
+### `main.py` (Parte 12)
+Al iniciar, el programa da la bienvenida y permite registrar varias piezas. Después muestra un menú que se repite hasta que el usuario elige salir. Cada opción llama a una función, y los errores se capturan y se muestran con un mensaje claro.
+
+1. Agregar una pieza
+2. Mostrar todas las piezas
+3. Mostrar piezas disponibles
+4. Mostrar el precio promedio
+5. Buscar una pieza (por identificador u otro campo)
+6. Eliminar una pieza
+7. Salir
+
+Opciones adicionales (funcionalidades del nivel I):
+
+8. Categorías y resumen por categoría
+9. Filtrar piezas por estado
+10. Filtrar piezas por precio mínimo
+11. Reglas de publicación y revisión
+12. Métricas del catálogo
+13. Manipulación de strings
+
+Al introducir los datos de una pieza, cada campo se valida en el momento: si un dato no es válido, se muestra el motivo y se vuelve a pedir solo ese campo.
 
 ---
 
 ## Ejemplo de interacción con el programa
 
 ```text
-========================================
-¡Bienvenido al Catálogo de Piezas Coleccionables!
-Estás ingresando al catálogo de piezas coleccionables.
-========================================
-
-¿Cuántas piezas deseas añadir? 2
+¡Bienvenido!
+Estás ingresando al catálogo de piezas coleccionables
+¿Cuántas piezas deseas añadir? 1
 
 Introduce los datos para la pieza número 1:
-Introduce el valor para id: P001
-Introduce el valor para name: Dragon Figure
-Introduce el valor para category: Figures
-Introduce el valor para price: 25.5
-Introduce el valor para status: disponible
-Introduce el valor para description: Figura usada en buen estado
+Introduce el identificador de la pieza: P001
+Introduce el nombre de la pieza: Dragon Figure
+Introduce la categoría de la pieza: Figuras
+Introduce el precio de la pieza: -5
+Error de validación: El precio debe ser mayor que cero.
+Introduce el precio de la pieza: 25.5
+Introduce el estado (disponible, reservada, vendida): nueva
+Error de validación: El estado debe ser 'disponible', 'reservada' o 'vendida'.
+Introduce el estado (disponible, reservada, vendida): disponible
+Introduce la descripción (debe contener obligatoriamente 'usada' o 'certificada'): Figura usada en buen estado
 
-Introduce los datos para la pieza número 2:
-Introduce el valor para id: P002
-Introduce el valor para name: Silver Coin
-Introduce el valor para category: Coins
-Introduce el valor para price: 120.0
-Introduce el valor para status: reservada
-Introduce el valor para description: Moneda certificada por experto
+Catálogo registrado:
+[{'id': 'P001', 'name': 'Dragon Figure', 'category': 'Figuras', 'price': 25.5, 'status': 'disponible', 'description': 'Figura usada en buen estado'}]
+
+=== Menú Interactivo ===
+1. Agregar una pieza
+2. Mostrar todas las piezas
+3. Mostrar piezas disponibles
+4. Mostrar el precio promedio
+5. Buscar una pieza (por identificador u otro campo)
+6. Eliminar una pieza
+7. Salir
+--- Opciones adicionales ---
+...
+Selecciona una opción (1-13): 5
 
 --- Búsqueda de pieza por campo y valor ---
 ¿Por qué campo deseas buscar? (id, name, category, price, status, description): id
 Introduce el valor de 'id' que deseas encontrar: P001
 Se encontraron 1 pieza(s):
-{'id': 'P001', 'name': 'Dragon Figure', 'category': 'Figures', 'price': 25.5, 'status': 'disponible', 'description': 'Figura usada en buen estado'}
+{'id': 'P001', 'name': 'Dragon Figure', 'category': 'Figuras', 'price': 25.5, 'status': 'disponible', 'description': 'Figura usada en buen estado'}
 
-=== Menú Interactivo ===
-1. Mostrar todas las piezas
-2. Mostrar solo las piezas disponibles
-3. Mostrar el precio promedio
-4. Salir
-Selecciona una opción (1-4): 2
+Selecciona una opción (1-13): 6
 
---- Piezas disponibles ---
-ID: P001 | Nombre: Dragon Figure | Precio: 25.5 | Estado: disponible
+--- Eliminar una pieza ---
+Introduce el identificador de la pieza que deseas eliminar: P999
+No se encontró ninguna pieza con id 'P999'. No se eliminó nada.
 
-=== Métricas del Catálogo ===
-1. Cantidad de piezas disponibles: 1
-2. Cantidad de piezas reservadas: 1
-3. Cantidad de piezas vendidas: 0
-4. Cantidad total de piezas: 2
-5. Suma total de los precios: 145.50
-6. Precio promedio del catálogo: 72.75
+Selecciona una opción (1-13): 4
 
---- Piezas enumeradas ---
-1. Dragon Figure
-2. Silver Coin
+--- Precio promedio ---
+Precio promedio del catálogo: 25.50
+
+Selecciona una opción (1-13): 7
+Saliendo del catálogo. ¡Hasta pronto!
+
+Programa finalizado con éxito.
 ```
 
 ---
 
 ## Tecnologías utilizadas
 
-- **Python 3:** Entorno de ejecución y sintaxis moderna.
-- **Estructuras de datos nativas:**
-  - `list`: Colección ordenada para el catálogo de piezas (`catalog`) y resultados de búsqueda.
-  - `dict`: Mapeo clave-valor para representar cada pieza con sus atributos.
-  - `set`: Conjunto para el almacenamiento de categorías únicas sin duplicados.
-- **Control de flujo:** Bucles `for` y `while`, condicionales `if`, `elif`, `else`.
-- **Métodos nativos de `str` y conversión de tipos:** `int()`, `float()`, `str()`, `.strip()`, `.split()`, `.replace()`, `.lower()`, `.upper()`, `.title()`, `enumerate()`.
+- **Python 3:** lenguaje y entorno de ejecución.
+- **Módulos propios:** `catalog.py`, `validations.py` y `main.py`, conectados con `import`.
+- **Funciones:** definición con parámetros, `return` y docstrings.
+- **Manejo de errores:** `try` / `except`, `raise` y las excepciones `ValueError`, `TypeError` y `LookupError`.
+- **Estructuras de datos nativas:** `list` (catálogo y resultados), `dict` (piezas, resumen y métricas) y `set` (categorías únicas).
+- **Control de flujo:** bucles `for` y `while` y condicionales `if` / `elif` / `else`.
+- **Métodos de `str` y conversión de tipos:** `int()`, `float()`, `str()`, `.strip()`, `.split()`, `.replace()`, `.lower()`, `.upper()`, `.title()`, `enumerate()` e `isinstance()`.
 
 ---
 
 ## Cómo ejecutar el programa
 
 ### 1. Requisitos previos
-Tener instalado Python 3.8 o superior en el sistema. Puedes comprobarlo ejecutando:
+Tener instalado Python 3.8 o superior. Puedes comprobarlo con:
 
 ```bash
 python --version
 ```
 
 ### 2. Ubicarse en el directorio del proyecto
-Abre una terminal o consola y dirígete a la carpeta raíz del proyecto:
 
 ```bash
-cd "ruta/hacia/Python-Colecciones-ref"
+cd "ruta/hacia/Python-Colecciones"
 ```
 
-### 3. Ejecutar el script principal
-Ejecuta el archivo `main.py`:
+### 3. Ejecutar el programa principal
 
 ```bash
 python main.py
 ```
 
-Sigue las instrucciones que aparecerán en la terminal para ingresar piezas, realizar búsquedas, interactuar con el menú y visualizar las métricas del catálogo.
+Sigue las instrucciones de la terminal para registrar piezas y usar el menú. Para salir, elige la opción `7`.
