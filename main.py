@@ -1,3 +1,4 @@
+from validations import validate_not_empty, validate_price, validate_status, validate_description
 from catalog import (add_piece, list_pieces, find_piece_by_id, find_pieces_by_field,
                      get_catalog_summary, get_unique_categories, get_pieces_by_category,
                      piece_exists, filter_by_status, filter_by_min_price,
@@ -35,43 +36,50 @@ print(lista_de_items[numero_item][consulta])
 
 """
 
-keys = ["id", "name", "category", "price", "status", "description"]
+piece_prompts = {
+    "id": "Introduce el identificador de la pieza: ",
+    "name": "Introduce el nombre de la pieza: ",
+    "category": "Introduce la categoría de la pieza: ",
+    "price": "Introduce el precio de la pieza: ",
+    "status": "Introduce el estado (disponible, reservada, vendida): ",
+    "description": "Introduce la descripción (debe contener obligatoriamente 'usada' o 'certificada'): "
+}
 
-piece = {}
+
+def validate_piece_field(catalog, key, value):
+    """Valida un campo de la pieza usando las funciones de validations.py."""
+    validate_not_empty(value, key)
+    if key == "id" and piece_exists(catalog, value):
+        raise ValueError("Ya existe una pieza con ese ID. Por favor, introduce uno diferente.")
+    elif key == "price":
+        validate_price(value)
+    elif key == "status":
+        validate_status(value)
+    elif key == "description":
+        validate_description(value)
+
+
+def ask_piece_data(catalog):
+    """Pide por terminal cada campo (repitiendo si no es válido) y retorna la pieza creada."""
+    piece = {}
+    for key, prompt in piece_prompts.items():
+        while True:
+            value = input(prompt).strip()
+            try:
+                validate_piece_field(catalog, key, value)
+                piece[key] = value
+                break
+            except ValueError as error:
+                print(f"Error de validación: {error}")
+    return add_piece(piece["id"], piece["name"], piece["category"],
+                     piece["price"], piece["status"], piece["description"])
+
+
 catalog = []
 quantity = int(input("¿Cuántas piezas deseas añadir? "))
 for x in range(0, quantity):
-    while True:
-        print(f"\nIntroduce los datos para la pieza número {x + 1}:")
-        for key in keys:
-            if key == "id":
-                while True:
-                    id_value = input(f"Introduce el valor para {key}: ").strip()
-                    if piece_exists(catalog, id_value):
-                        print("Ya existe una pieza con ese ID. Por favor, introduce uno diferente.")
-                    else:
-                        piece[key] = id_value
-                        break
-
-            elif key == "price":
-                while True:
-                    try:
-                        price_val = float(input(f"Introduce el valor para {key}: "))
-                        piece[key] = price_val
-                        break
-                    except ValueError:
-                        print("Error: El precio debe ser un número válido (ej: 12 o 19.99).")
-
-            else:
-                value = input(f"Introduce el valor para {key}: ")
-                piece[key] = value
-        try:
-            catalog.append(add_piece(piece["id"], piece["name"], piece["category"],
-                                     piece["price"], piece["status"], piece["description"]))
-            break
-        except ValueError as error:
-            print(f"Error: {error} Vuelve a introducir los datos de la pieza.")
-    piece = {}
+    print(f"\nIntroduce los datos para la pieza número {x + 1}:")
+    catalog.append(ask_piece_data(catalog))
 print("\nCatálogo registrado:")
 print(catalog)
 
@@ -264,44 +272,10 @@ except TypeError as error:
 # Parte 12: Validaciones básicas
 
 print("\n=== Validaciones Básicas: Registrar Pieza Validada ===")
-valid_id = input("Introduce el identificador de la pieza: ").strip()
-
-valid_name = input("Introduce el nombre de la pieza: ").strip()
-while not valid_name:
-    print("Error de validación: El nombre no puede estar vacío.")
-    valid_name = input("Introduce el nombre de la pieza: ").strip()
-
-valid_category = input("Introduce la categoría de la pieza: ").strip()
-while not valid_category:
-    print("Error de validación: La categoría no puede estar vacía.")
-    valid_category = input("Introduce la categoría de la pieza: ").strip()
-
-while True:
-    price_input_val = input("Introduce el precio de la pieza: ").strip()
-    if price_input_val.replace(".", "", 1).isdigit() and float(price_input_val) > 0:
-        valid_price = float(price_input_val)
-        break
-    print("Error de validación: El precio debe ser un valor numérico mayor que cero.")
-
-allowed_statuses = ["disponible", "reservada", "vendida"]
-valid_status = input("Introduce el estado (disponible, reservada, vendida): ").strip().lower()
-while valid_status not in allowed_statuses:
-    print("Error de validación: El estado debe ser 'disponible', 'reservada' o 'vendida'.")
-    valid_status = input("Introduce el estado (disponible, reservada, vendida): ").strip().lower()
-
-valid_description = input("Introduce la descripción (debe contener obligatoriamente 'usada' o 'certificada'): ").strip()
-while "usada" not in valid_description.lower() and "certificada" not in valid_description.lower():
-    print("Error de validación: La descripción debe contener obligatoriamente la palabra 'usada' o 'certificada'.")
-    valid_description = input("Introduce la descripción (debe contener obligatoriamente 'usada' o 'certificada'): ").strip()
-
-try:
-    new_validated_piece = add_piece(valid_id, valid_name, valid_category,
-                                    valid_price, valid_status, valid_description)
-    catalog.append(new_validated_piece)
-    print("\nPieza validada añadida correctamente al catálogo:")
-    print(new_validated_piece)
-except ValueError as error:
-    print(f"\nNo se pudo añadir la pieza: {error}")
+new_validated_piece = ask_piece_data(catalog)
+catalog.append(new_validated_piece)
+print("\nPieza validada añadida correctamente al catálogo:")
+print(new_validated_piece)
 print(f"Total actualizado de piezas en el catálogo: {len(catalog)}")
 print("\nPrograma finalizado con éxito.")
 

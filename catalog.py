@@ -1,4 +1,5 @@
-ALLOWED_STATUSES = ["disponible", "reservada", "vendida"]
+from validations import (ALLOWED_STATUSES, validate_not_empty, validate_price,
+                         validate_status, validate_description)
 
 
 def validate_catalog(catalog):
@@ -17,31 +18,18 @@ def add_piece(piece_id, name, category, price, status, description):
     fields = {"id": piece_id, "name": name, "category": category,
               "price": price, "status": status, "description": description}
     for field_name, value in fields.items():
-        if value is None or str(value).strip() == "":
-            raise ValueError(f"El campo '{field_name}' no puede estar vacío.")
-
-    try:
-        price = float(price)
-    except (TypeError, ValueError):
-        raise ValueError("El precio debe ser un valor numérico (ej: 12 o 19.99).")
-    if price <= 0:
-        raise ValueError("El precio debe ser mayor que cero.")
-
-    status = str(status).strip().lower()
-    if status not in ALLOWED_STATUSES:
-        raise ValueError("El estado debe ser 'disponible', 'reservada' o 'vendida'.")
-
-    description = str(description).strip()
-    if "usada" not in description.lower() and "certificada" not in description.lower():
-        raise ValueError("La descripción debe contener obligatoriamente la palabra 'usada' o 'certificada'.")
+        validate_not_empty(value, field_name)
+    price = validate_price(price)
+    validate_status(status)
+    validate_description(description)
 
     return {
         "id": str(piece_id).strip(),
         "name": str(name).strip(),
         "category": str(category).strip(),
         "price": price,
-        "status": status,
-        "description": description
+        "status": str(status).strip().lower(),
+        "description": str(description).strip()
     }
 
 
@@ -136,9 +124,8 @@ def filter_by_status(catalog, status):
     Lanza ValueError si el estado no está entre los permitidos.
     """
     validate_catalog(catalog)
+    validate_status(status)
     status = str(status).strip().lower()
-    if status not in ALLOWED_STATUSES:
-        raise ValueError("El estado debe ser 'disponible', 'reservada' o 'vendida'.")
     return [elem for elem in catalog if elem["status"].lower() == status]
 
 
