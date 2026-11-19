@@ -140,3 +140,18 @@ def filter_by_status(catalog, status):
     if status not in ALLOWED_STATUSES:
         raise ValueError("El estado debe ser 'disponible', 'reservada' o 'vendida'.")
     return [elem for elem in catalog if elem["status"].lower() == status]
+
+
+# Parte 9: Filtrar por precio mínimo
+
+def filter_by_min_price(catalog, min_price):
+    """Retorna las piezas cuyo precio sea mayor que el precio mínimo indicado.
+
+    Lanza ValueError si el precio mínimo no es numérico.
+    """
+    validate_catalog(catalog)
+    try:
+        min_price = float(min_price)
+    except (TypeError, ValueError):
+        raise ValueError("El precio mínimo debe ser un valor numérico.")
+    return [elem for elem in catalog if float(elem["price"]) > min_price]

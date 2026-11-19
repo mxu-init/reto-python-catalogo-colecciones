@@ -1,6 +1,6 @@
 from catalog import (add_piece, list_pieces, find_piece_by_id, find_pieces_by_field,
                      get_catalog_summary, get_unique_categories, get_pieces_by_category,
-                     piece_exists, filter_by_status, ALLOWED_STATUSES)
+                     piece_exists, filter_by_status, filter_by_min_price, ALLOWED_STATUSES)
 
 # Nivel 1
 # Parte 1: Preparación del proyecto
@@ -129,19 +129,20 @@ for target_status in ALLOWED_STATUSES:
 # Parte 7: Filtrar piezas por precio
 
 min_price_input = input("\nIntroduce un precio mínimo para filtrar: ").strip()
-while not min_price_input.replace(".", "", 1).isdigit():
-    print("Precio no válido. Por favor, introduce un valor numérico.")
-    min_price_input = input("Introduce un precio mínimo para filtrar: ").strip()
+while True:
+    try:
+        price_pieces = filter_by_min_price(catalog, min_price_input)
+        break
+    except ValueError as error:
+        print(f"Precio no válido. {error}")
+        min_price_input = input("Introduce un precio mínimo para filtrar: ").strip()
 
 min_price = float(min_price_input)
-price_found = False
 print(f"\n--- Piezas con precio superior a {min_price} ---")
-for elem in catalog:
-    if float(elem["price"]) > min_price:
-        print(f"ID: {elem['id']} | Nombre: {elem['name']} | Precio: {elem['price']}")
-        price_found = True
+for elem in price_pieces:
+    print(f"ID: {elem['id']} | Nombre: {elem['name']} | Precio: {elem['price']}")
 
-if not price_found:
+if not price_pieces:
     print(f"No se encontraron piezas con precio superior a {min_price}.")
 
 # Parte 8: Aplicar operadores lógicos
