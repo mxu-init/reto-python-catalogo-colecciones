@@ -1,4 +1,4 @@
-from catalog import add_piece
+from catalog import add_piece, list_pieces
 
 # Nivel 1
 # Parte 1: Preparación del proyecto
@@ -270,8 +270,11 @@ print(f"5. Suma total de los precios: {sum_prices:.2f}")
 print(f"6. Precio promedio del catálogo: {catalog_avg_price:.2f}")
 
 print("\n--- Piezas enumeradas ---")
-for index, elem in enumerate(catalog, start=1):
-    print(f"{index}. {elem['name']}")
+try:
+    for index, piece_name in enumerate(list_pieces(catalog), start=1):
+        print(f"{index}. {piece_name}")
+except TypeError as error:
+    print(f"Error: {error}")
 
 # Parte 12: Validaciones básicas
 

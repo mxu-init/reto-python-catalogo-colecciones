@@ -1,6 +1,12 @@
 ALLOWED_STATUSES = ["disponible", "reservada", "vendida"]
 
 
+def validate_catalog(catalog):
+    """Lanza TypeError si el catálogo recibido no es una lista."""
+    if not isinstance(catalog, list):
+        raise TypeError("El catálogo debe ser una lista de piezas.")
+
+
 # Parte 1: Agregar una pieza
 
 def add_piece(piece_id, name, category, price, status, description):
@@ -37,3 +43,14 @@ def add_piece(piece_id, name, category, price, status, description):
         "status": status,
         "description": description
     }
+
+
+# Parte 2: Listar piezas
+
+def list_pieces(catalog):
+    """Retorna una lista con los nombres de todas las piezas del catálogo.
+
+    Lanza TypeError si el catálogo no es una lista.
+    """
+    validate_catalog(catalog)
+    return [elem["name"] for elem in catalog]
