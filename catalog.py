@@ -126,3 +126,17 @@ def piece_exists(catalog, piece_id):
     """Retorna True si existe una pieza con ese id, o False en caso contrario."""
     validate_catalog(catalog)
     return find_piece_by_id(catalog, piece_id) is not None
+
+
+# Parte 8: Filtrar por estado
+
+def filter_by_status(catalog, status):
+    """Retorna una lista con las piezas que tengan el estado indicado.
+
+    Lanza ValueError si el estado no está entre los permitidos.
+    """
+    validate_catalog(catalog)
+    status = str(status).strip().lower()
+    if status not in ALLOWED_STATUSES:
+        raise ValueError("El estado debe ser 'disponible', 'reservada' o 'vendida'.")
+    return [elem for elem in catalog if elem["status"].lower() == status]

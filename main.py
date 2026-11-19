@@ -1,6 +1,6 @@
 from catalog import (add_piece, list_pieces, find_piece_by_id, find_pieces_by_field,
                      get_catalog_summary, get_unique_categories, get_pieces_by_category,
-                     piece_exists)
+                     piece_exists, filter_by_status, ALLOWED_STATUSES)
 
 # Nivel 1
 # Parte 1: Preparación del proyecto
@@ -118,14 +118,12 @@ print(f"Cantidad de categorías diferentes: {len(categories)}")
 # Nivel 2
 # Parte 6: Filtrar piezas por estado
 
-for target_status in ["disponible", "reservada", "vendida"]:
+for target_status in ALLOWED_STATUSES:
     print(f"\n--- Piezas en estado '{target_status}' ---")
-    status_found = False
-    for elem in catalog:
-        if elem["status"].lower() == target_status:
-            print(f"ID: {elem['id']} | Nombre: {elem['name']} | Categoría: {elem['category']} | Precio: {elem['price']} | Estado: {elem['status']}")
-            status_found = True
-    if not status_found:
+    status_pieces = filter_by_status(catalog, target_status)
+    for elem in status_pieces:
+        print(f"ID: {elem['id']} | Nombre: {elem['name']} | Categoría: {elem['category']} | Precio: {elem['price']} | Estado: {elem['status']}")
+    if not status_pieces:
         print(f"No se encontraron piezas con el estado '{target_status}'.")
 
 # Parte 7: Filtrar piezas por precio
@@ -224,12 +222,10 @@ while menu_active:
                 print(f"ID: {elem['id']} | Nombre: {elem['name']} | Categoría: {elem['category']} | Precio: {elem['price']} | Estado: {elem['status']} | Descripción: {elem['description']}")
     elif selected_option == "2":
         print("\n--- Piezas disponibles ---")
-        available_found = False
-        for elem in catalog:
-            if elem["status"].lower() == "disponible":
-                print(f"ID: {elem['id']} | Nombre: {elem['name']} | Precio: {elem['price']} | Estado: {elem['status']}")
-                available_found = True
-        if not available_found:
+        available_pieces = filter_by_status(catalog, "disponible")
+        for elem in available_pieces:
+            print(f"ID: {elem['id']} | Nombre: {elem['name']} | Precio: {elem['price']} | Estado: {elem['status']}")
+        if not available_pieces:
             print("No se encontraron piezas disponibles.")
     elif selected_option == "3":
         print("\n--- Precio promedio ---")
