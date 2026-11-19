@@ -71,3 +71,21 @@ def find_pieces_by_field(catalog, search_field, search_value):
     """Retorna una lista con las piezas cuyo campo coincida con el valor buscado."""
     validate_catalog(catalog)
     return [elem for elem in catalog if str(elem.get(search_field)).lower() == str(search_value).strip().lower()]
+
+
+# Parte 4: Quitar una pieza del catálogo
+
+def remove_piece(catalog, piece_id):
+    """Elimina la pieza con el id indicado.
+
+    Retorna True si se eliminó, o False si no se encontró o el catálogo no es válido.
+    """
+    try:
+        validate_catalog(catalog)
+        piece = find_piece_by_id(catalog, piece_id)
+        if piece is None:
+            raise LookupError(f"No se encontró ninguna pieza con id '{piece_id}'.")
+        catalog.remove(piece)
+        return True
+    except (TypeError, LookupError):
+        return False
