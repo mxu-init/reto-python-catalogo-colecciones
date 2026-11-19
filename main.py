@@ -1,5 +1,6 @@
 from catalog import (add_piece, list_pieces, find_piece_by_id, find_pieces_by_field,
-                     get_catalog_summary, get_unique_categories, get_pieces_by_category)
+                     get_catalog_summary, get_unique_categories, get_pieces_by_category,
+                     piece_exists)
 
 # Nivel 1
 # Parte 1: Preparación del proyecto
@@ -45,8 +46,7 @@ for x in range(0, quantity):
             if key == "id":
                 while True:
                     id_value = input(f"Introduce el valor para {key}: ").strip()
-                    existing_ids = [elem["id"] for elem in catalog]
-                    if id_value in existing_ids:
+                    if piece_exists(catalog, id_value):
                         print("Ya existe una pieza con ese ID. Por favor, introduce uno diferente.")
                     else:
                         piece[key] = id_value

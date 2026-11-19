@@ -118,3 +118,11 @@ def get_pieces_by_category(catalog, category):
     """Retorna una lista con los nombres de las piezas de la categoría indicada."""
     validate_catalog(catalog)
     return [elem["name"] for elem in catalog if elem["category"].lower() == str(category).strip().lower()]
+
+
+# Parte 7: Verificar existencia de una pieza (booleano)
+
+def piece_exists(catalog, piece_id):
+    """Retorna True si existe una pieza con ese id, o False en caso contrario."""
+    validate_catalog(catalog)
+    return find_piece_by_id(catalog, piece_id) is not None
